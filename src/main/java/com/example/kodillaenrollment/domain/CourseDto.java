@@ -3,19 +3,18 @@ package com.example.kodillaenrollment.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.sql.Time;
 import java.util.Date;
+import java.util.List;
 
 @AllArgsConstructor
 @Getter
-@Setter
 public class CourseDto {
 
     private Long id;
     private String title;
-    private String teacher;
+    private List<TeacherDto> assignedTeachers;
     private Date startingDate;
     private Date endDate;
     private int pricePerMonth;

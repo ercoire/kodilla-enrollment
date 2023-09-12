@@ -1,8 +1,6 @@
 package com.example.kodillaenrollment.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,12 +16,24 @@ import java.util.List;
 public class Teacher {
 
     @Id
-    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "firstname")
     private String firstname;
+
+    @Column(name = "lastname")
     private String lastname;
-    private String assignedCourses;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "COURSES_TO_TEACHERS",
+            joinColumns = {@JoinColumn(name = "teacher_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "course_id", referencedColumnName = "id")}
+    )
+    private List<Course> assignedCourses;
+
+    @Column(name = "description")
     private String description;
 
     public void setId(Long id) {

@@ -6,8 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Time;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @NoArgsConstructor
@@ -27,14 +27,16 @@ public class Course {
     @ManyToMany(mappedBy = "assignedCourses")
     private List<Teacher> assignedTeachers;
 
-    @ManyToMany(mappedBy = "courses")
+    @ManyToMany(mappedBy = "courseList")
     private List<Student> students;
 
+    @Temporal(TemporalType.DATE)
     @Column(name = "starting_date")
-    private Date startingDate;
+    private LocalDate startingDate;
 
+    @Temporal(TemporalType.DATE)
     @Column(name = "end_date")
-    private Date endDate;
+    private LocalDate endDate;
 
     @Column(name = "price_per_month")
     private int pricePerMonth;
@@ -45,14 +47,16 @@ public class Course {
     @Column(name = "duration")
     private int duration;
 
-    @Column(name = "level")
-    private int level;
 
     @Column(name = "day")
     private String day;
 
     @Column(name = "time")
-    private Time time;
+    private LocalTime time;
+
+    @OneToMany
+    @JoinColumn(name = "course_id")
+    private List<Payment> payment;
 
 
     public Long getId() {

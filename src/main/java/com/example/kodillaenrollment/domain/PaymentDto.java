@@ -2,20 +2,18 @@ package com.example.kodillaenrollment.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @AllArgsConstructor
 @Getter
-@Setter
 public class PaymentDto {
 
     private Long id;
-    private Date paymentDate;
-    private String student;
+    private LocalDate paymentDate;
+    private Student student;
     private int amount;
-    private int courseId;
-    private int eventId;
+    private Long courseId;
+    private Long eventId;
 
 }

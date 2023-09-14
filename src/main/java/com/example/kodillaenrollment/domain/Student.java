@@ -1,13 +1,12 @@
 package com.example.kodillaenrollment.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,18 +16,54 @@ import java.util.List;
 @Getter
 @Entity(name = "STUDENTS")
 public class Student {
-
+/*
     @Id
-    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "firstname")
     private String firstname;
-    private String lastname;
-    private String activeCourses;
-    private String futureCourses;
-    private String payments;
-    private Date absences;
 
+    @Column(name = "lastname")
+    private String lastname;
+
+    @OneToOne(mappedBy = "student")
+    private Payment payment;
+
+
+    @Column(name = "PAYMENT_DATE")
+    public Date getPaymentDate(Payment payment) {
+        return payment.getPaymentDate();
+    }
+
+    @Column(name = "payment_amount")
+    private int paymentAmount; */
+
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "firstname")
+    private String firstname;
+
+    @Column(name = "lastname")
+    private String lastname;
+
+    @ManyToMany (cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "STUDENT_TO_COURSE",
+            joinColumns = {@JoinColumn(name = "student_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "course_id", referencedColumnName = "id")})
+    private List<Course> courseList;
+
+    @OneToMany (targetEntity = Payment.class,
+    mappedBy = "student")
+    private List<Payment> payments;
+
+
+    @ManyToMany(mappedBy = "eventAttendance")
+    private List<Event> eventAttendance;
 
     public void setId(Long id) {
         this.id = id;
@@ -36,5 +71,11 @@ public class Student {
 
     public Long getId() {
         return id;
+    }
+
+    public Student(Long id, String firstname, String lastname) {
+        this.id = id;
+        this.firstname = firstname;
+        this.lastname = lastname;
     }
 }

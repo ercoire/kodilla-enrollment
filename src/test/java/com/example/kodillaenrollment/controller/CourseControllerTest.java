@@ -1,0 +1,201 @@
+package com.example.kodillaenrollment.controller;
+
+import com.example.kodillaenrollment.domain.*;
+import com.example.kodillaenrollment.repository.CourseRepository;
+import com.example.kodillaenrollment.repository.StudentRepository;
+import com.example.kodillaenrollment.repository.TeacherRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+@Transactional
+class CourseControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    CourseRepository courseRepository;
+
+    @Autowired
+    TeacherRepository teacherRepository;
+
+    @Autowired
+    StudentRepository studentRepository;
+
+    @Test
+    void shouldCreateCourse() throws Exception {
+        //Given
+        CourseDto dto = new CourseDto(1L, "title", List.of(),
+                LocalDate.of(2023, 1, 1),
+                LocalDate.of(2023, 12, 31),
+                100, "test", 70, "Mon",
+                LocalTime.now());
+        String jsonContent = objectMapper.writeValueAsString(dto);
+
+        //When&Then
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/v1/courses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(jsonContent))
+                .andExpect(MockMvcResultMatchers.status().is(200));
+    }
+
+    @Test
+    void shouldGetAllCourses() throws Exception {
+        //Given
+        Course course1 = new Course(null, "title", List.of(), List.of(),
+                LocalDate.of(2023, 1, 1),
+                LocalDate.of(2023, 12, 31),
+                100, "test", 70, "Mon",
+                LocalTime.now(), List.of());
+        Course course2 = new Course(null, "title2", List.of(), List.of(),
+                LocalDate.of(2022, 5, 6),
+                LocalDate.of(2022, 10, 31),
+                120, "test2", 40, "Tue",
+                LocalTime.now(), List.of());
+        courseRepository.save(course1);
+        courseRepository.save(course2);
+
+
+        //When-Then
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/v1/courses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8"))
+                .andExpect(MockMvcResultMatchers.status().is(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(2)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].title", Matchers.is("title")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].title", Matchers.is("title2")));
+
+    }
+
+    @Test
+    void shouldGetCourse() throws Exception {
+        //Given
+        Teacher t = new Teacher(null, "name1", "name2", null, "test");
+        List<Teacher> test = new ArrayList<>();
+        test.add(t);
+        teacherRepository.save(t);
+        Course course1 = new Course(null, "title", test, List.of(),
+                LocalDate.of(2023, 1, 1),
+                LocalDate.of(2023, 12, 31),
+                100, "test", 70, "Mon",
+                LocalTime.now(), List.of());
+        courseRepository.save(course1);
+
+
+        //When-Then
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/v1/courses/{courseId}", course1.getId().toString())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8"))
+                .andExpect(MockMvcResultMatchers.status().is(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title", Matchers.is("title")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.assignedTeachers", Matchers.hasSize(1)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.assignedTeachers[0].firstname", Matchers.is("name1")));
+    }
+
+    @Test
+    void shouldDeleteCourse() throws Exception {
+        //Given
+        Teacher t = new Teacher(null, "name1", "name2", null, "test");
+        List<Teacher> test = new ArrayList<>();
+        test.add(t);
+        teacherRepository.save(t);
+
+        Course course1 = new Course(null, "title", test, List.of(),
+                LocalDate.of(2023, 1, 1),
+                LocalDate.of(2023, 12, 31),
+                100, "test", 70, "Mon",
+                LocalTime.now(), List.of());
+        courseRepository.save(course1);
+
+
+        //When-Then
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/v1/courses/{courseId}", course1.getId().toString())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8"))
+                .andExpect(MockMvcResultMatchers.status().is(200));
+
+
+        assertFalse(courseRepository.findById(course1.getId()).isPresent());
+        assertTrue(teacherRepository.findById(t.getId()).isPresent());
+    }
+
+    @Test
+    void shouldUpdateCourse() throws Exception {
+        //Given
+        Teacher teacher1 = new Teacher(null, "name1", "name2", null, "test");
+        List<Teacher> test = new ArrayList<>();
+        test.add(teacher1);
+        teacherRepository.save(teacher1);
+
+        Student basicStudent = new Student(null, "studentName", "studentFamily");
+        studentRepository.save(basicStudent);
+        List<Student> students = new ArrayList<>();
+        students.add(basicStudent);
+
+        Course course1 = new Course(null, "title", test, students,
+                LocalDate.of(2023, 1, 1),
+                LocalDate.of(2023, 12, 31),
+                100, "test", 70, "Mon",
+                LocalTime.now(), List.of());
+        courseRepository.save(course1);
+
+        Teacher teacher2 = new Teacher(null, "new name 1", "new name 2", null, "test2");
+        teacherRepository.save(teacher2);
+
+        TeacherDto teacherDto = new TeacherDto(teacher2.getId(), "name1", "name2", "test");
+        List<TeacherDto> testDtoList = new ArrayList<>();
+        testDtoList.add(teacherDto);
+        CourseDto dto = new CourseDto(course1.getId(), "title", testDtoList,
+                LocalDate.of(2023, 1, 1),
+                LocalDate.of(2023, 6, 30),
+                150, "test", 70, "Mon",
+                LocalTime.now());
+        String jsonContent = objectMapper.writeValueAsString(dto);
+
+        //When
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/v1/courses/{courseId}", course1.getId().toString())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(jsonContent))
+                .andExpect(MockMvcResultMatchers.status().is(200));
+
+        Optional<Course> actual = courseRepository.findById(course1.getId());
+        assertTrue(actual.isPresent());
+        Course updatedCourse = actual.get();
+        assertEquals(updatedCourse.getAssignedTeachers().get(0).getFirstname(), teacher2.getFirstname());
+        assertEquals(updatedCourse.getAssignedTeachers().get(0).getLastname(), teacher2.getLastname());
+        assertEquals(updatedCourse.getEndDate(), dto.getEndDate());
+        assertEquals(updatedCourse.getPricePerMonth(), dto.getPricePerMonth());
+        assertEquals(1, updatedCourse.getStudents().size());
+
+
+    }
+}

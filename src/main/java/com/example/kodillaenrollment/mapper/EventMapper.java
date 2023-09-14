@@ -4,6 +4,8 @@ import com.example.kodillaenrollment.domain.Event;
 import com.example.kodillaenrollment.domain.EventDto;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class EventMapper {
 
@@ -14,16 +16,18 @@ public class EventMapper {
                 event.getStartDate(),
                 event.getEndDate(),
                 event.getPrice()
-                );
+        );
     }
 
-    public Event mapToEvent (final EventDto eventDto) {
+    public Event mapToEvent(final EventDto eventDto) {
         return new Event(
                 eventDto.getId(),
                 eventDto.getTitle(),
                 eventDto.getStartDate(),
                 eventDto.getEndDate(),
-                eventDto.getPrice()
+                eventDto.getPrice(),
+                List.of(),
+                List.of()
         );
     }
 }

@@ -15,7 +15,6 @@ public class TeacherMapper {
                 teacherDto.getId(),
                 teacherDto.getFirstname(),
                 teacherDto.getLastname(),
-                teacherDto.getAssignedCourses(),
                 teacherDto.getDescription()
         );
     }
@@ -25,7 +24,6 @@ public class TeacherMapper {
                 teacher.getId(),
                 teacher.getFirstname(),
                 teacher.getLastname(),
-                teacher.getAssignedCourses(),
                 teacher.getDescription()
         );
     }
@@ -33,6 +31,12 @@ public class TeacherMapper {
     public List<TeacherDto> mapToTeacherDtoList(final List<Teacher> teacherList) {
         return teacherList.stream()
                 .map(this::mapToTeacherDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<Teacher> mapToTeacherList(final List<TeacherDto> teacherDtoList){
+        return teacherDtoList.stream()
+                .map(this::mapToTeacher)
                 .collect(Collectors.toList());
     }
 }

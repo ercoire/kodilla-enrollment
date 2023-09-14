@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -42,5 +43,13 @@ public class Teacher {
 
     public Long getId() {
         return id;
+    }
+
+    public Teacher(Long id, String firstname, String lastname, String description) {
+        this.id = id;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.description = description;
+        this.assignedCourses = new ArrayList<>();
     }
 }

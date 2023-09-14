@@ -2,7 +2,10 @@ package com.example.kodillaenrollment.controller;
 
 import com.example.kodillaenrollment.domain.Course;
 import com.example.kodillaenrollment.domain.CourseDto;
+import com.example.kodillaenrollment.domain.Student;
+import com.example.kodillaenrollment.domain.StudentDto;
 import com.example.kodillaenrollment.mapper.CourseMapper;
+import com.example.kodillaenrollment.mapper.StudentMapper;
 import com.example.kodillaenrollment.service.DbService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -19,10 +22,11 @@ public class CourseController {
 
     private final DbService dbService;
     private final CourseMapper courseMapper;
+    private final StudentMapper studentMapper;
 
 
 
-    @GetMapping(value = "{courseId}")
+    @GetMapping(value = "/{courseId}")
     public ResponseEntity<CourseDto> getCourse(@PathVariable Long courseId) {
         Course course = dbService.getCourse(courseId);
         return ResponseEntity.ok(courseMapper.mapToCourseDto(course));
@@ -34,6 +38,13 @@ public class CourseController {
         return ResponseEntity.ok(courseMapper.mapToCourseDtoList(courseList));
     }
 
+    @GetMapping(value = "/{courseId}/students")
+    public ResponseEntity<List<StudentDto>> fetchStudentsOfCourse(@PathVariable Long courseId) {
+        Course course = dbService.getCourse(courseId);
+        List<Student> studentsOfCourse = course.getStudents();
+        return ResponseEntity.ok(studentMapper.mapToStudentDtoList(studentsOfCourse));
+    }
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> createCourse(@RequestBody CourseDto courseDto) {
         Course course = courseMapper.mapToCourse(courseDto);
@@ -41,14 +52,14 @@ public class CourseController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping
-    public ResponseEntity<CourseDto> updateCourse(@RequestBody CourseDto courseDto) {
+    @PutMapping(value = "/{courseId}")
+    public ResponseEntity<CourseDto> updateCourse(@PathVariable Long courseId, @RequestBody CourseDto courseDto) {
         Course course = courseMapper.mapToCourse(courseDto);
-        Course savedCourse = dbService.saveCourse(course);
+        Course savedCourse = dbService.updateCourse(course);
         return ResponseEntity.ok(courseMapper.mapToCourseDto(savedCourse));
     }
 
-    @DeleteMapping(value = "{courseId}")
+    @DeleteMapping(value = "/{courseId}")
     public ResponseEntity<Void> deleteCourse(@PathVariable Long courseId) {
         dbService.deleteCourse(courseId);
         return ResponseEntity.ok().build();

@@ -2,7 +2,11 @@ package com.example.kodillaenrollment.mapper;
 
 import com.example.kodillaenrollment.domain.Payment;
 import com.example.kodillaenrollment.domain.PaymentDto;
+import com.example.kodillaenrollment.domain.Student;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PaymentMapper {
@@ -27,6 +31,12 @@ public class PaymentMapper {
                 paymentDto.getCourseId(),
                 paymentDto.getEventId()
         );
+    }
+
+    public List<PaymentDto> mapToPaymentDtoList(final List<Payment> paymentList) {
+        return paymentList.stream()
+                .map(this::mapToPaymentDto)
+                .collect(Collectors.toList());
     }
 
 }

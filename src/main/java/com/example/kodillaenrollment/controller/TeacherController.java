@@ -29,7 +29,7 @@ public class TeacherController {
         return ResponseEntity.ok(teacherMapper.mapToTeacherDtoList(teacherList));
     }
 
-    @GetMapping(value = "{teacherId}")
+    @GetMapping(value = "/{teacherId}")
     public ResponseEntity<TeacherDto> getTeacher(@PathVariable Long teacherId) {
         Teacher teacher = dbService.getTeacher(teacherId);
         return ResponseEntity.ok(teacherMapper.mapToTeacherDto(teacher));
@@ -49,7 +49,7 @@ public class TeacherController {
         return ResponseEntity.ok(teacherMapper.mapToTeacherDto(savedTeacher));
     }
 
-    @GetMapping(value = "{teacherId}/courses")
+    @GetMapping(value = "/{teacherId}/courses")
     public ResponseEntity<List<CourseDto>> fetchCoursesByTeacher(@PathVariable String teacherId) {
         List<Course> coursesByTeacher = dbService.getAllCourses().stream()
                 .filter(course -> course.getAssignedTeachers() != null &&
@@ -59,7 +59,7 @@ public class TeacherController {
         return ResponseEntity.ok(courseMapper.mapToCourseDtoList(coursesByTeacher));
     }
 
-    @DeleteMapping(value = "{teacherId}")
+    @DeleteMapping(value = "/{teacherId}")
     public ResponseEntity<Void> deleteTeacher(@PathVariable Long teacherId) {
         dbService.deleteTeacher(teacherId);
         return ResponseEntity.ok().build();

@@ -1,14 +1,15 @@
 package com.example.kodillaenrollment.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Date;
 
+@AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
@@ -16,14 +17,25 @@ import java.util.Date;
 public class Payment {
 
     @Id
-    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Date paymentDate;
-    private String student;
+    @Column(name = "payment_date")
+    private LocalDate paymentDate;
+
+    @ManyToOne
+    @JoinColumn(name = "student_id")
+    private Student student;
+
+    @Column(name = "amount")
     private int amount;
-    private int courseId;
-    private int eventId;
+
+    @Column(name = "course_id")
+    private Long courseId;
+
+    @Column(name = "event_id")
+    private Long eventId;
+
 
     public void setId(Long id) {
         this.id = id;
@@ -32,4 +44,6 @@ public class Payment {
     public Long getId() {
         return id;
     }
+
+
 }

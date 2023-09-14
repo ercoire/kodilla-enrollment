@@ -1,9 +1,6 @@
 package com.example.kodillaenrollment.service;
 
-import com.example.kodillaenrollment.domain.Course;
-import com.example.kodillaenrollment.domain.Event;
-import com.example.kodillaenrollment.domain.Student;
-import com.example.kodillaenrollment.domain.Teacher;
+import com.example.kodillaenrollment.domain.*;
 import com.example.kodillaenrollment.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,10 +15,17 @@ public class DbService {
     private final StudentRepository studentRepository; //todo
     private final TeacherRepository teacherRepository;
     private final EventRepository eventRepository;
-    private final PaymentRepository paymentRepository;  //todo
+    private final PaymentRepository paymentRepository;
 
-    //courses
+    //course
     public Course saveCourse(final Course course) {
+        return courseRepository.save(course);
+    }
+
+    public Course updateCourse(final Course course){
+        Course toBeUpdated = courseRepository.findById(course.getId()).get();
+        course.setPayment(toBeUpdated.getPayment());
+        course.setStudents(toBeUpdated.getStudents());
         return courseRepository.save(course);
     }
 
@@ -37,7 +41,7 @@ public class DbService {
         courseRepository.deleteById(id);
     }
 
-    //teachers
+    //teacher
     public Teacher saveTeacher(final Teacher teacher) {
         return teacherRepository.save(teacher);
     }
@@ -77,7 +81,17 @@ public class DbService {
         return eventRepository.findById(id).get();
     }
 
-    public Event saveEvent(final Event event) {
-        return eventRepository.save(event);
+    public void saveEvent(final Event event) {
+        eventRepository.save(event);
     }
+
+    //payment
+    public List<Payment> getAllPayments()throws NoSuchElementException{
+        return paymentRepository.findAll();
+    }
+
+    public void savePayment(final Payment payment){
+        paymentRepository.save(payment);
+    }
+
 }

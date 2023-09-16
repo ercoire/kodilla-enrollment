@@ -26,13 +26,8 @@ public class Teacher {
     @Column(name = "lastname")
     private String lastname;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "COURSES_TO_TEACHERS",
-            joinColumns = {@JoinColumn(name = "teacher_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "course_id", referencedColumnName = "id")}
-    )
-    private List<Course> assignedCourses;
+    @ManyToMany(mappedBy = "assignedTeachers")
+    private List<Course> assignedCourses = new ArrayList<>();
 
     @Column(name = "description")
     private String description;

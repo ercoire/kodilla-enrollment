@@ -12,17 +12,16 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class DbService {
     private final CourseRepository courseRepository;
-    private final StudentRepository studentRepository; //todo
+    private final StudentRepository studentRepository;
     private final TeacherRepository teacherRepository;
-    private final EventRepository eventRepository;
     private final PaymentRepository paymentRepository;
 
     //course
-    public Course saveCourse(final Course course) {
-        return courseRepository.save(course);
+    public void saveCourse(final Course course) {
+        courseRepository.save(course);
     }
 
-    public Course updateCourse(final Course course){
+    public Course updateCourse(final Course course) {
         Course toBeUpdated = courseRepository.findById(course.getId()).get();
         course.setPayment(toBeUpdated.getPayment());
         course.setStudents(toBeUpdated.getStudents());
@@ -41,9 +40,20 @@ public class DbService {
         courseRepository.deleteById(id);
     }
 
+    public void addStudentToCourse(Long courseId, Long studentId) {
+        Student student = studentRepository.findById(studentId).get();
+        Course course = courseRepository.findById(courseId).get();
+        List<Course> studentCourses = student.getCourseList();
+        studentCourses.add(course);
+        List<Student> courseStudents = course.getStudents();
+        courseStudents.add(student);
+        studentRepository.save(student);
+        courseRepository.save(course);
+    }
+
     //teacher
-    public Teacher saveTeacher(final Teacher teacher) {
-        return teacherRepository.save(teacher);
+    public void saveTeacher(final Teacher teacher) {
+        teacherRepository.save(teacher);
     }
 
     public Teacher getTeacher(long id) throws NoSuchElementException {
@@ -55,12 +65,30 @@ public class DbService {
     }
 
 
+    public Teacher updateTeacher(final Teacher teacher) {
+        Teacher toBeUpdated = teacherRepository.findById(teacher.getId()).get();
+        teacher.setAssignedCourses(toBeUpdated.getAssignedCourses());
+        return teacherRepository.save(teacher);
+    }
+
     public void deleteTeacher(long id) {
         teacherRepository.deleteById(id);
     }
 
+    public List<Course> getCoursesByTeacher(long id) throws NoSuchElementException {
+        Teacher teacher = getTeacher(id);
+        return teacher.getAssignedCourses();
+    }
+
     //student
-    public Student saveStudent(final Student student) {
+    public void saveStudent(final Student student) {
+        studentRepository.save(student);
+    }
+
+    public Student updateStudent(final Student student){
+        Student toBeUpdated = studentRepository.findById(student.getId()).get();
+        student.setCourseList(toBeUpdated.getCourseList());
+        student.setPayments(toBeUpdated.getPayments());
         return studentRepository.save(student);
     }
 
@@ -73,25 +101,37 @@ public class DbService {
     }
 
     public void deleteStudent(long id) {
-        courseRepository.deleteById(id);
+        studentRepository.deleteById(id);
     }
 
-    //event
-    public Event getEvent(long id) throws NoSuchElementException {
-        return eventRepository.findById(id).get();
+    public List<Course> getCoursesByStudentId(long id){
+        Student student = getStudent(id);
+        return student.getCourseList();
     }
 
-    public void saveEvent(final Event event) {
-        eventRepository.save(event);
+    public List<Payment> getPaymentsByStudentId(long id){
+        Student student = getStudent(id);
+        return student.getPayments();
     }
+
 
     //payment
-    public List<Payment> getAllPayments()throws NoSuchElementException{
+    public List<Payment> getAllPayments() throws NoSuchElementException {
         return paymentRepository.findAll();
     }
 
-    public void savePayment(final Payment payment){
+    public void savePayment(final Payment payment, Long studentId) {
+        Student student = studentRepository.findById(studentId).get();
+        Course course = courseRepository.findById(payment.getCourseId()).get();
+        List<Payment> studentPayments = student.getPayments();
+        studentPayments.add(payment);
+        List<Payment> coursePayments = course.getPayment();
+        coursePayments.add(payment);
+        payment.setStudent(student);
         paymentRepository.save(payment);
+        studentRepository.save(student);
+        courseRepository.save(course);
     }
+
 
 }

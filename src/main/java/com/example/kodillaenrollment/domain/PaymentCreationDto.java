@@ -7,12 +7,11 @@ import java.time.LocalDate;
 
 @AllArgsConstructor
 @Getter
-public class PaymentDto {
+public class PaymentCreationDto {
 
     private Long id;
     private LocalDate paymentDate;
-    private StudentDto studentDto;
+    private Long studentId;
     private int amount;
     private Long courseId;
-
 }

@@ -14,42 +14,19 @@ public class StudentMapper {
         return new Student(
                 studentDto.getId(),
                 studentDto.getFirstname(),
-                studentDto.getLastname(),
-                studentDto.getCourseList(),
-                studentDto.getPayments(),
-          //      studentDto.getAbsences(),
-                studentDto.getEventAttendance()
+                studentDto.getLastname()
         );
     }
 
     public StudentDto mapToStudentDto(final Student student) {
         return new StudentDto(
-//                student.getId(),
-//                student.getFirstname(),
-//                student.getLastname(),
-//                student.getCourseList(),
-//                student.getPaymentDate(),
-//                student.getPaymentAmount(),
-//                student.getAbsences(),
-//                student.getEventAttendance()
-                );
-    }
-
-    public StudentDto mapToBasicStudentDto(final Student student){
-        return new StudentDto(
                 student.getId(),
                 student.getFirstname(),
                 student.getLastname()
-        );
+                );
     }
 
-    public Student mapToBasicStudent(final StudentDto studentDto){
-        return new Student(
-                studentDto.getId(),
-                studentDto.getFirstname(),
-                studentDto.getLastname()
-        );
-    }
+
 
     public List<StudentDto> mapToStudentDtoList(final List<Student> studentList) {
         return studentList.stream()

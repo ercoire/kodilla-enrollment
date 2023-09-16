@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,9 +32,12 @@ public class Payment {
     @Column(name = "course_id")
     private Long courseId;
 
-    @Column(name = "event_id")
-    private Long eventId;
-
+    public Payment(Long id, LocalDate paymentDate, int amount, Long courseId) {
+        this.id = id;
+        this.paymentDate = paymentDate;
+        this.amount = amount;
+        this.courseId = courseId;
+    }
 
     public void setId(Long id) {
         this.id = id;

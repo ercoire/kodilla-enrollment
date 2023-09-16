@@ -1,10 +1,8 @@
 package com.example.kodillaenrollment.controller;
 
-import com.example.kodillaenrollment.domain.Course;
-import com.example.kodillaenrollment.domain.CourseDto;
-import com.example.kodillaenrollment.domain.Student;
-import com.example.kodillaenrollment.domain.StudentDto;
+import com.example.kodillaenrollment.domain.*;
 import com.example.kodillaenrollment.mapper.CourseMapper;
+import com.example.kodillaenrollment.mapper.PaymentMapper;
 import com.example.kodillaenrollment.mapper.StudentMapper;
 import com.example.kodillaenrollment.service.DbService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +21,7 @@ public class CourseController {
     private final DbService dbService;
     private final CourseMapper courseMapper;
     private final StudentMapper studentMapper;
+    private final PaymentMapper paymentMapper;
 
 
 
@@ -38,12 +37,6 @@ public class CourseController {
         return ResponseEntity.ok(courseMapper.mapToCourseDtoList(courseList));
     }
 
-    @GetMapping(value = "/{courseId}/students")
-    public ResponseEntity<List<StudentDto>> fetchStudentsOfCourse(@PathVariable Long courseId) {
-        Course course = dbService.getCourse(courseId);
-        List<Student> studentsOfCourse = course.getStudents();
-        return ResponseEntity.ok(studentMapper.mapToStudentDtoList(studentsOfCourse));
-    }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> createCourse(@RequestBody CourseDto courseDto) {
@@ -65,5 +58,24 @@ public class CourseController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/{courseId}/payments")
+    public ResponseEntity<List<PaymentDto>> getPaymentsByCourseId(@PathVariable Long courseId){
+        Course course = dbService.getCourse(courseId);
+        List<Payment> paymentsByCourse = course.getPayment();
+        return ResponseEntity.ok(paymentMapper.mapToPaymentDtoList(paymentsByCourse));
+    }
+
+    @GetMapping("/{courseId}/students")
+    public ResponseEntity<List<StudentDto>> getStudentsByCourseId(@PathVariable Long courseId){
+        Course course = dbService.getCourse(courseId);
+        List<Student> studentList = course.getStudents();
+        return ResponseEntity.ok(studentMapper.mapToStudentDtoList(studentList));
+    }
+
+    @PostMapping("/{courseId}/students/{studentId}")
+    public ResponseEntity<Void> addStudentToCourse(@PathVariable Long courseId, @PathVariable Long studentId){
+        dbService.addStudentToCourse(courseId, studentId);
+        return ResponseEntity.ok().build();
+    }
 }
 

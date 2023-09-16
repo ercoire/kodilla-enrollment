@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @AllArgsConstructor
@@ -16,29 +15,6 @@ import java.util.List;
 @Getter
 @Entity(name = "STUDENTS")
 public class Student {
-/*
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "firstname")
-    private String firstname;
-
-    @Column(name = "lastname")
-    private String lastname;
-
-    @OneToOne(mappedBy = "student")
-    private Payment payment;
-
-
-    @Column(name = "PAYMENT_DATE")
-    public Date getPaymentDate(Payment payment) {
-        return payment.getPaymentDate();
-    }
-
-    @Column(name = "payment_amount")
-    private int paymentAmount; */
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,20 +26,17 @@ public class Student {
     @Column(name = "lastname")
     private String lastname;
 
-    @ManyToMany (cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(
             name = "STUDENT_TO_COURSE",
             joinColumns = {@JoinColumn(name = "student_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "course_id", referencedColumnName = "id")})
-    private List<Course> courseList;
+    private List<Course> courseList = new ArrayList<>();
 
     @OneToMany (targetEntity = Payment.class,
     mappedBy = "student")
-    private List<Payment> payments;
+    private List<Payment> payments = new ArrayList<>();
 
-
-    @ManyToMany(mappedBy = "eventAttendance")
-    private List<Event> eventAttendance;
 
     public void setId(Long id) {
         this.id = id;

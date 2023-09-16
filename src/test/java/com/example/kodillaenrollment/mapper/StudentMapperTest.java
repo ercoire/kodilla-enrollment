@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,12 +20,12 @@ class StudentMapperTest {
     StudentMapper studentMapper;
 
     @Test
-    void shouldMapToBasicStudentDto() {
+    void shouldMapToStudentDto() {
         //Given
         Student test = new Student(1L, "firstname", "lastname");
 
         //When
-        StudentDto actual = studentMapper.mapToBasicStudentDto(test);
+        StudentDto actual = studentMapper.mapToStudentDto(test);
 
         //Then
         assertEquals(test.getId(), actual.getId());
@@ -34,12 +34,12 @@ class StudentMapperTest {
     }
 
     @Test
-    void shouldMapToBasicStudent() {
+    void shouldMapToStudent() {
         //Given
         StudentDto test = new StudentDto(1L, "firstname", "lastname");
 
         //When
-        Student actual = studentMapper.mapToBasicStudent(test);
+        Student actual = studentMapper.mapToStudent(test);
 
         //Then
         assertEquals(test.getId(), actual.getId());
@@ -48,18 +48,21 @@ class StudentMapperTest {
     }
 
     @Test
-    void shouldMapToStudent(){
-        //Given
-        StudentDto dto = new StudentDto(1L, "firstname", "lastname", List.of(), List.of(), List.of());
+    void shouldMapToStudentDtoList(){
+       //Given
+        Student student = new Student(null, "first", "last");
+        List<Student> list = new ArrayList<>();
+        list.add(student);
 
         //When
-        Student actual = studentMapper.mapToStudent(dto);
+        List<StudentDto> actual = studentMapper.mapToStudentDtoList(list);
 
         //Then
-        assertEquals(dto.getId(), actual.getId());
-        assertEquals(dto.getFirstname(), actual.getFirstname());
-        assertEquals(dto.getLastname(), actual.getLastname());
-    }
+        assertEquals(1, actual.size());
+        assertEquals(list.get(0).getId(), actual.get(0).getId());
+        assertEquals(list.get(0).getFirstname(), actual.get(0).getFirstname());
+        assertEquals(list.get(0).getLastname(), actual.get(0).getLastname());
 
+    }
 }
 

@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -24,8 +25,13 @@ public class Course {
     @Column(name = "title")
     private String title;
 
-    @ManyToMany(mappedBy = "assignedCourses")
-    private List<Teacher> assignedTeachers;
+    @ManyToMany
+    @JoinTable(
+            name = "COURSES_TO_TEACHERS",
+            joinColumns = {@JoinColumn(name = "course_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "teacher_id", referencedColumnName = "id")}
+    )
+    private List<Teacher> assignedTeachers = new ArrayList<>();
 
     @ManyToMany(mappedBy = "courseList")
     private List<Student> students;
@@ -56,7 +62,7 @@ public class Course {
 
     @OneToMany
     @JoinColumn(name = "course_id")
-    private List<Payment> payment;
+    private List<Payment> payment = new ArrayList<>();
 
 
     public Long getId() {

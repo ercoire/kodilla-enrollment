@@ -2,6 +2,7 @@ package com.example.kodillaenrollment.controller;
 
 import com.example.kodillaenrollment.domain.*;
 import com.example.kodillaenrollment.repository.CourseRepository;
+import com.example.kodillaenrollment.repository.PaymentRepository;
 import com.example.kodillaenrollment.repository.StudentRepository;
 import com.example.kodillaenrollment.repository.TeacherRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,6 +44,9 @@ class CourseControllerTest {
 
     @Autowired
     StudentRepository studentRepository;
+
+    @Autowired
+    PaymentRepository paymentRepository;
 
     @Test
     void shouldCreateCourse() throws Exception {
@@ -136,7 +140,7 @@ class CourseControllerTest {
 
         //When-Then
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/v1/courses/{courseId}", course1.getId().toString())
+                        .delete("/v1/courses/{courseId}", course1.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8"))
                 .andExpect(MockMvcResultMatchers.status().is(200));
@@ -198,4 +202,95 @@ class CourseControllerTest {
 
 
     }
+
+    @Test
+    void shouldGetPaymentsByCourseId() throws Exception {
+        //Given
+        Student student = new Student();
+        Payment payment1 = new Payment(null, LocalDate.of(2023, 9, 10), student, 10, null);
+        Payment payment2 = new Payment(null, LocalDate.of(2023, 8, 4), student, 50, null);
+        List<Payment> paymentList = new ArrayList<>();
+        paymentList.add(payment1);
+        paymentList.add(payment2);
+        paymentRepository.save(payment1);
+        paymentRepository.save(payment2);
+
+        Course course = new Course(null, "title", List.of(), List.of(),
+                LocalDate.of(2023, 1, 1),
+                LocalDate.of(2023, 12, 31),
+                100, "test", 70, "Mon",
+                LocalTime.now(), paymentList);
+        courseRepository.save(course);
+
+        //When-Then
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/v1/courses/{courseId}/payments", course.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8"))
+                .andExpect(MockMvcResultMatchers.status().is(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(2)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].amount", Matchers.is(10)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].amount", Matchers.is(50)));
+    }
+
+    @Test
+    void shouldGetStudentsByCourseId() throws Exception {
+        //Given
+        Student student1 = new Student(null, "first1", "last1", List.of(), null);
+        Student student2 = new Student(null, "first2", "last2", List.of(), null);
+        List<Student> students = new ArrayList<>();
+        students.add(student1);
+        students.add(student2);
+        studentRepository.save(student1);
+        studentRepository.save(student2);
+
+        Course course = new Course(null, "title", List.of(), students,
+                LocalDate.of(2023, 1, 1),
+                LocalDate.of(2023, 12, 31),
+                100, "test", 70, "Mon",
+                LocalTime.now(), null);
+        courseRepository.save(course);
+
+        //When-Then
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/v1/courses/{courseId}/students", course.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8"))
+                .andExpect(MockMvcResultMatchers.status().is(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(2)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].lastname", Matchers.is("last1")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].lastname", Matchers.is("last2")));
+    }
+
+    @Test
+    void shouldAddStudentToCourse() throws Exception {
+        //Given
+        Course course = new Course(null, "title", null, new ArrayList<>(),
+                LocalDate.of(2023, 2, 1),
+                LocalDate.of(2023, 2, 20),
+                50, "dummy", 50, "Tue", LocalTime.now(),
+                new ArrayList<>());
+        courseRepository.save(course);
+
+        Student student = new Student(null, "first", "last", new ArrayList<>(), new ArrayList<>());
+        studentRepository.save(student);
+
+
+        //When-Then
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/v1/courses/{courseId}/students/{studentId}", course.getId(), student.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8"))
+                .andExpect(MockMvcResultMatchers.status().is(200));
+
+
+        Optional<Student> resultStudent = studentRepository.findById(student.getId());
+        assertTrue(resultStudent.isPresent());
+        assertEquals(resultStudent.get().getCourseList().get(0).getId(), course.getId());
+
+        Optional<Course> resultCourse = courseRepository.findById(course.getId());
+        assertTrue(resultCourse.isPresent());
+        assertEquals(resultCourse.get().getStudents().get(0).getId(), student.getId());
+    }
 }
+

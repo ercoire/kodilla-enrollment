@@ -42,20 +42,16 @@ public class TeacherController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping
-    public ResponseEntity<TeacherDto> updateTeacher(@RequestBody TeacherDto teacherDto) {
+    @PutMapping(value = "/{teacherId}")
+    public ResponseEntity<TeacherDto> updateTeacher(@RequestBody TeacherDto teacherDto, @PathVariable Long teacherId) {
         Teacher teacher = teacherMapper.mapToTeacher(teacherDto);
-        Teacher savedTeacher = dbService.saveTeacher(teacher);
+        Teacher savedTeacher = dbService.updateTeacher(teacher);
         return ResponseEntity.ok(teacherMapper.mapToTeacherDto(savedTeacher));
     }
 
     @GetMapping(value = "/{teacherId}/courses")
-    public ResponseEntity<List<CourseDto>> fetchCoursesByTeacher(@PathVariable String teacherId) {
-        List<Course> coursesByTeacher = dbService.getAllCourses().stream()
-                .filter(course -> course.getAssignedTeachers() != null &&
-                        course.getAssignedTeachers().stream()
-                                .anyMatch(teacher -> teacher.getId().equals(Long.parseLong(teacherId))))
-                .toList();
+    public ResponseEntity<List<CourseDto>> getCoursesByTeacher(@PathVariable Long teacherId) {
+      List<Course> coursesByTeacher = dbService.getCoursesByTeacher(teacherId);
         return ResponseEntity.ok(courseMapper.mapToCourseDtoList(coursesByTeacher));
     }
 

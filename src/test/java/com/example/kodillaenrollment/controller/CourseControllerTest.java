@@ -5,8 +5,10 @@ import com.example.kodillaenrollment.repository.CourseRepository;
 import com.example.kodillaenrollment.repository.PaymentRepository;
 import com.example.kodillaenrollment.repository.StudentRepository;
 import com.example.kodillaenrollment.repository.TeacherRepository;
+import com.example.kodillaenrollment.service.TestEmailService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -47,6 +49,9 @@ class CourseControllerTest {
 
     @Autowired
     PaymentRepository paymentRepository;
+
+    @Autowired
+    TestEmailService emailService;
 
     @Test
     void shouldCreateCourse() throws Exception {
@@ -120,6 +125,7 @@ class CourseControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.title", Matchers.is("title")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.assignedTeachers", Matchers.hasSize(1)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.assignedTeachers[0].firstname", Matchers.is("name1")));
+
     }
 
     @Test
@@ -158,7 +164,7 @@ class CourseControllerTest {
         test.add(teacher1);
         teacherRepository.save(teacher1);
 
-        Student basicStudent = new Student(null, "studentName", "studentFamily");
+        Student basicStudent = new Student(null, "studentName", "studentFamily", "studentMail");
         studentRepository.save(basicStudent);
         List<Student> students = new ArrayList<>();
         students.add(basicStudent);
@@ -236,8 +242,8 @@ class CourseControllerTest {
     @Test
     void shouldGetStudentsByCourseId() throws Exception {
         //Given
-        Student student1 = new Student(null, "first1", "last1", List.of(), null);
-        Student student2 = new Student(null, "first2", "last2", List.of(), null);
+        Student student1 = new Student(null, "first1", "last1", "mail1", List.of(), null);
+        Student student2 = new Student(null, "first2", "last2", "mail2", List.of(), null);
         List<Student> students = new ArrayList<>();
         students.add(student1);
         students.add(student2);
@@ -272,7 +278,7 @@ class CourseControllerTest {
                 new ArrayList<>());
         courseRepository.save(course);
 
-        Student student = new Student(null, "first", "last", new ArrayList<>(), new ArrayList<>());
+        Student student = new Student(null, "first", "last", "mail", new ArrayList<>(), new ArrayList<>());
         studentRepository.save(student);
 
 

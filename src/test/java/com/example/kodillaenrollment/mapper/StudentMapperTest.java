@@ -22,7 +22,7 @@ class StudentMapperTest {
     @Test
     void shouldMapToStudentDto() {
         //Given
-        Student test = new Student(1L, "firstname", "lastname");
+        Student test = new Student(1L, "firstname", "lastname", "email");
 
         //When
         StudentDto actual = studentMapper.mapToStudentDto(test);
@@ -36,7 +36,7 @@ class StudentMapperTest {
     @Test
     void shouldMapToStudent() {
         //Given
-        StudentDto test = new StudentDto(1L, "firstname", "lastname");
+        StudentDto test = new StudentDto(1L, "firstname", "lastname", "email");
 
         //When
         Student actual = studentMapper.mapToStudent(test);
@@ -50,7 +50,7 @@ class StudentMapperTest {
     @Test
     void shouldMapToStudentDtoList(){
        //Given
-        Student student = new Student(null, "first", "last");
+        Student student = new Student(null, "first", "last", "mail");
         List<Student> list = new ArrayList<>();
         list.add(student);
 

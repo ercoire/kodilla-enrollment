@@ -26,6 +26,9 @@ public class Student {
     @Column(name = "lastname")
     private String lastname;
 
+    @Column(name = "email")
+    private String email;
+
     @ManyToMany
     @JoinTable(
             name = "STUDENT_TO_COURSE",
@@ -34,7 +37,7 @@ public class Student {
     private List<Course> courseList = new ArrayList<>();
 
     @OneToMany (targetEntity = Payment.class,
-    mappedBy = "student")
+    mappedBy = "student", cascade = CascadeType.REMOVE)
     private List<Payment> payments = new ArrayList<>();
 
 
@@ -46,9 +49,10 @@ public class Student {
         return id;
     }
 
-    public Student(Long id, String firstname, String lastname) {
+    public Student(Long id, String firstname, String lastname, String email) {
         this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
+        this.email = email;
     }
 }

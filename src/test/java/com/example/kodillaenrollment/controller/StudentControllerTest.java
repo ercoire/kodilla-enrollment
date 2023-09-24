@@ -50,8 +50,8 @@ class StudentControllerTest {
     @Test
     void shouldGetStudents() throws Exception {
         //Given
-        Student student1 = new Student(null, "name1", "name2");
-        Student student2 = new Student(null, "name3", "name4");
+        Student student1 = new Student(null, "name1", "name2", "mail");
+        Student student2 = new Student(null, "name3", "name4", "mail");
 
         studentRepository.save(student1);
         studentRepository.save(student2);
@@ -71,7 +71,7 @@ class StudentControllerTest {
     @Test
     void shouldGetStudent() throws Exception {
         //Given
-        Student student1 = new Student(null, "name1", "name2");
+        Student student1 = new Student(null, "name1", "name2", "mail");
         studentRepository.save(student1);
 
         //When-Then
@@ -87,7 +87,7 @@ class StudentControllerTest {
     @Test
     void shouldCreateStudent() throws Exception {
         //Given
-        StudentDto dto = new StudentDto(null, "firstname", "lastname");
+        StudentDto dto = new StudentDto(null, "firstname", "lastname","email");
         String jsonContent = objectMapper.writeValueAsString(dto);
 
         //When-Then
@@ -115,10 +115,10 @@ class StudentControllerTest {
         List<Payment> paymentList = new ArrayList<>();
         paymentList.add(payment);
         paymentRepository.save(payment);
-        Student student = new Student(null, "name1", "name2", courseList, paymentList);
+        Student student = new Student(null, "name1", "name2", "mail", courseList, paymentList);
         studentRepository.save(student);
 
-        StudentDto dto = new StudentDto(student.getId(), "new name1", "new name2");
+        StudentDto dto = new StudentDto(student.getId(), "new name1", "new name2", "new mail");
 
         String jsonContent = objectMapper.writeValueAsString(dto);
 
@@ -152,7 +152,7 @@ class StudentControllerTest {
         List<Payment> paymentList = new ArrayList<>();
         paymentList.add(payment);
 
-        Student student = new Student(null, "first", "last", courseList, paymentList);
+        Student student = new Student(null, "first", "last","mail", courseList, paymentList);
         studentRepository.save(student);
 
         //When-Then
@@ -186,7 +186,7 @@ class StudentControllerTest {
         courseRepository.save(course1);
         courseRepository.save(course2);
 
-        Student student = new Student(null, "name1", "name2", courseList, List.of());
+        Student student = new Student(null, "name1", "name2","mail", courseList, List.of());
         studentRepository.save(student);
 
         //When-Then
@@ -204,7 +204,7 @@ class StudentControllerTest {
     void shouldGetPaymentsByStudentId() throws Exception {
         //Given
         List<Payment> paymentList = new ArrayList<>();
-        Student student = new Student(null, "name1", "name2", List.of(), paymentList);
+        Student student = new Student(null, "name1", "name2", "mail", List.of(), paymentList);
         studentRepository.save(student);
 
         Payment payment1 = new Payment(null, LocalDate.of(2023, 9, 10), student, 10, null);

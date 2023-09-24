@@ -58,7 +58,7 @@ class PaymentControllerTest {
         List<Course> courseList = new ArrayList<>();
         courseList.add(course);
 
-        Student student = new Student(null, "first", "last", courseList, new ArrayList<>());
+        Student student = new Student(null, "first", "last", "mail", courseList, new ArrayList<>());
         studentRepository.save(student);
 
         PaymentCreationDto dto = new PaymentCreationDto(null, LocalDate.now(), student.getId(), 50, course.getId());

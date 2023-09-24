@@ -22,7 +22,7 @@ public class PaymentMapperTest {
     @Test
     void shouldMapToPaymentDto() {
         //Given
-        Student student = new Student(1L, "name", "name1");
+        Student student = new Student(1L, "name", "name1", "mail");
         Payment payment = new Payment(1L, LocalDate.of(2023, 1, 1), student, 100, 1L);
 
         //When

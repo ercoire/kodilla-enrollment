@@ -14,4 +14,5 @@ public class TestEmailService implements EmailService {
     public void send(Mail mail) {
         //do nothing
     }
+
 }

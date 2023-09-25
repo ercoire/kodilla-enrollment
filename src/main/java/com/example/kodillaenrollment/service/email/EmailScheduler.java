@@ -29,7 +29,9 @@ public class EmailScheduler {
         String message;
         if (notification.isPresent()) {
             CourseEnrollmentNotification n = notification.get();
-            message = "Dear " + n.getStudentName() + "! You are in " + n.getCourseTitle();
+            message = "Dear " + n.getStudentName() + ", Welcome to " + n.getCourseTitle() +
+                    "! Thank you for your registration. Further details will some in a separate communication. " +
+                    "With best regards, Happy Steps";
 
             emailService.send(new Mail(
                     // n.getEmail(), // in real production environment

@@ -5,12 +5,14 @@ import com.example.kodillaenrollment.mapper.CourseMapper;
 import com.example.kodillaenrollment.mapper.PaymentMapper;
 import com.example.kodillaenrollment.mapper.StudentMapper;
 import com.example.kodillaenrollment.service.StudentService;
+import com.example.kodillaenrollment.service.WsdcService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/students")
@@ -22,6 +24,7 @@ public class StudentController {
     private final StudentMapper studentMapper;
     private final CourseMapper courseMapper;
     private final PaymentMapper paymentMapper;
+    private final WsdcService wsdcService;
 
 
     @GetMapping
@@ -66,5 +69,15 @@ public class StudentController {
     public ResponseEntity<List<PaymentDto>> getPaymentsByStudentId(@PathVariable Long studentId) {
         List<Payment> paymentsByStudentId = studentService.getPaymentsByStudentId(studentId);
         return ResponseEntity.ok(paymentMapper.mapToPaymentDtoList(paymentsByStudentId));
+    }
+
+    @GetMapping("/{studentId}/wsdc-info")
+    public ResponseEntity<WsdcInfoDto> getStudentWsdcInfo(@PathVariable Long studentId) {
+        Optional<WsdcInfoDto> infoDto = wsdcService.fetchStudentInfo(studentId);
+        if (infoDto.isPresent()) {
+            return ResponseEntity.ok(infoDto.get());
+        } else {
+            return ResponseEntity.ok(null);
+        }
     }
 }

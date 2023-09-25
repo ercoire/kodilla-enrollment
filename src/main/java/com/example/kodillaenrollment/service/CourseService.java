@@ -1,8 +1,10 @@
 package com.example.kodillaenrollment.service;
 
 import com.example.kodillaenrollment.domain.Course;
+import com.example.kodillaenrollment.domain.CourseEnrollmentNotification;
 import com.example.kodillaenrollment.domain.Student;
 import com.example.kodillaenrollment.repository.CourseRepository;
+import com.example.kodillaenrollment.repository.EnrollmentNotificationRepository;
 import com.example.kodillaenrollment.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ public class CourseService {
 
     private final StudentRepository studentRepository;
     private final CourseRepository courseRepository;
+    private final EnrollmentNotificationRepository enrollmentNotificationRepository;
 
     public void saveCourse(final Course course) {
         courseRepository.save(course);
@@ -52,6 +55,11 @@ public class CourseService {
         courseStudents.add(student);
         studentRepository.save(student);
         courseRepository.save(course);
-        //todo save notific
-    }
+        CourseEnrollmentNotification notification = new CourseEnrollmentNotification(
+                student.getEmail(),
+                student.getFirstname() + " " + student.getLastname(),
+                course.getTitle());
+        enrollmentNotificationRepository.save(notification);
+        }
+
 }

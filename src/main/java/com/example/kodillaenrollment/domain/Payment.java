@@ -1,15 +1,13 @@
 package com.example.kodillaenrollment.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 @Setter
 @Getter
 @Entity(name = "PAYMENTS")

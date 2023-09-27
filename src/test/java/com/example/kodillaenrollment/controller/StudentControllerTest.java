@@ -164,7 +164,7 @@ class StudentControllerTest {
 
         assertFalse(studentRepository.findById(student.getId()).isPresent());
         assertTrue(courseRepository.findById(course.getId()).isPresent());
-        assertTrue(paymentRepository.findById(payment.getId()).isPresent());
+        assertFalse(paymentRepository.findById(payment.getId()).isPresent());
     }
 
     @Test

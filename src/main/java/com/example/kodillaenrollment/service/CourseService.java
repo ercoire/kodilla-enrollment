@@ -3,15 +3,19 @@ package com.example.kodillaenrollment.service;
 import com.example.kodillaenrollment.domain.Course;
 import com.example.kodillaenrollment.domain.CourseEnrollmentNotification;
 import com.example.kodillaenrollment.domain.Student;
+import com.example.kodillaenrollment.domain.Teacher;
 import com.example.kodillaenrollment.repository.CourseRepository;
 import com.example.kodillaenrollment.repository.EnrollmentNotificationRepository;
 import com.example.kodillaenrollment.repository.StudentRepository;
+import com.example.kodillaenrollment.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +24,7 @@ public class CourseService {
 
     private final StudentRepository studentRepository;
     private final CourseRepository courseRepository;
+    private final TeacherRepository teacherRepository;
     private final EnrollmentNotificationRepository enrollmentNotificationRepository;
 
     public void saveCourse(final Course course) {
@@ -42,6 +47,21 @@ public class CourseService {
     }
 
     public void deleteCourse(long id) {
+        Optional<Course> selected = courseRepository.findById(id);
+        Course course = selected.get();
+        List<Teacher> teachers = course.getAssignedTeachers();
+        teachers.forEach(teacher -> {
+            teacher.getAssignedCourses().remove(course);
+            teacherRepository.save(teacher);
+        });
+        List<Student> students = course.getStudents();
+        students.forEach(student -> {
+            student.getCourseList().remove(course);
+            studentRepository.save(student);
+        });
+        course.setAssignedTeachers(new ArrayList<>());
+        course.setStudents(new ArrayList<>());
+        courseRepository.save(course);
         courseRepository.deleteById(id);
     }
 
@@ -60,6 +80,6 @@ public class CourseService {
                 student.getFirstname() + " " + student.getLastname(),
                 course.getTitle());
         enrollmentNotificationRepository.save(notification);
-        }
+    }
 
 }

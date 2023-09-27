@@ -2,18 +2,22 @@ package com.example.kodillaenrollment.service;
 
 import com.example.kodillaenrollment.domain.Course;
 import com.example.kodillaenrollment.domain.Teacher;
+import com.example.kodillaenrollment.repository.CourseRepository;
 import com.example.kodillaenrollment.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class TeacherService {
 
     private final TeacherRepository teacherRepository;
+    private final CourseRepository courseRepository;
 
 
     public void saveTeacher(final Teacher teacher) {
@@ -36,6 +40,15 @@ public class TeacherService {
     }
 
     public void deleteTeacher(long id) {
+        Optional<Teacher> selected = teacherRepository.findById(id);
+        Teacher teacher = selected.get();
+        List<Course> courses = teacher.getAssignedCourses();
+        courses.forEach(course -> {
+            course.getAssignedTeachers().remove(teacher);
+            courseRepository.save(course);
+        });
+        teacher.setAssignedCourses(new ArrayList<>());
+        teacherRepository.save(teacher);
         teacherRepository.deleteById(id);
     }
 

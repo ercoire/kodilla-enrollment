@@ -1,10 +1,7 @@
 package com.example.kodillaenrollment.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -15,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @Setter
 @Getter
+@EqualsAndHashCode
 @Entity(name = "COURSES")
 public class Course {
 
@@ -60,7 +58,7 @@ public class Course {
     @Column(name = "time")
     private LocalTime time;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "course_id")
     private List<Payment> payment = new ArrayList<>();
 

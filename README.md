@@ -54,9 +54,9 @@ WCS is main dance style offered in Happy Steps and students are advised for the 
 
 ### Other comments
 
-Scheduler setup is designed according to Strategy principles and divided to production and test email service repository implementation.
+Notification emails that are sent when new student enrolls to a course, are based on EmailService interface that has test and production implementation, according to strategy design pattern. This way emails are not sent out during test execution.
 
-Notification emails that are sent when new student enrolls to a course are monitored with separate db table COURSE_ENROLLMENT_NOTIFICATION that collects emails to be sent and empties when it is done successfully. According to Transactional Outbox concept.
+They are also monitored with separate db table COURSE_ENROLLMENT_NOTIFICATION that collects emails to be sent and empties when it is done successfully, according to Transactional Outbox design pattern.
 
 
 ### Contact

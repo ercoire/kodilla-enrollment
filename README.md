@@ -24,7 +24,7 @@ git clone git@github.com:ercoire/kodilla-enrollment-frontend.git
 
 
 #### Database: 
-* To add database audit use scripts available in
+* To add database audit use scripts available in [Trigger scripts](https://github.com/ercoire/kodilla-enrollment/tree/main/Trigger%20scripts)
 
 
 #### Run

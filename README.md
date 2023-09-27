@@ -18,7 +18,8 @@ This solo project has been submitted as the final project for Kodilla bootcamp S
 Before running the application you need to set the following environment variables: 
 
 DATABASE_NAME, DB_USERNAME, DB_PASSWORD
-MAIL_USERNAME, MAIL_PASSWORD
+
+MAIL_USERNAME, MAIL_PASSWORD - based on [mailtrap.io](mailtrap.io) account
 
 
 
@@ -50,6 +51,13 @@ Repository also available in [kodilla-enrollment-frontend](https://github.com/er
 
 The app is integrated with [World Swing Dance Council](https://www.worldsdc.com/registry-points/) that fetches data regarding dance levels for West Coast Swing dancers. 
 WCS is main dance style offered in Happy Steps and students are advised for the most suitable level based on their record in WSDC.
+
+### Other comments
+
+Scheduler setup is designed according to Strategy principles and divided to production and test email service repository implementation.
+
+Notification emails that are sent when new student enrolls to a course are monitored with separate db table COURSE_ENROLLMENT_NOTIFICATION that collects emails to be sent and empties when it is done successfully. According to Transactional Outbox concept.
+
 
 ### Contact
 For questions or comment please drop me a line at [k.gierasimczuk@gmail.com]()
